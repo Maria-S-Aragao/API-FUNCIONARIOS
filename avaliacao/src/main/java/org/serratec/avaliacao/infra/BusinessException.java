@@ -1,8 +1,5 @@
 package org.serratec.avaliacao.infra;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**********************************************************************************************
  * BASICAMENTE, É UMA CLASSE QUE EXTENDS A CLASSE RUNTIMEEXCEPTION, QUE É EXTREMAMENTE ÚTIL   *
  * EM ERROS DE NEGÓCIOS, QUE OCORREM NAS FUNÇÕES DO SERVICE, OU SEJA, QUALQUER ERRO QUE       *
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * ENCONTRADO.							  													  *
  **********************************************************************************************/
 
-@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 public class BusinessException extends RuntimeException {
 	
 	/*BASICAMENTE BOA PRÁTICA E PORQUE FICOU AMARELINHO, EU PODERIA IGNORAR, MAS TEM SUA 

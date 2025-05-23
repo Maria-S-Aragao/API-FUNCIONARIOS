@@ -3,6 +3,8 @@ package org.serratec.avaliacao.service;
 import java.util.List;
 import java.util.Optional;
 import org.serratec.avaliacao.domain.Funcionario;
+import org.serratec.avaliacao.dto.EnderecoUpdateDto;
+import org.serratec.avaliacao.dto.FuncionarioUpdateDto;
 import org.serratec.avaliacao.infra.BusinessException;
 import org.serratec.avaliacao.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
@@ -63,7 +65,7 @@ public class FuncionarioService {
 		repositorio.deleteById(id);
 	}
 	
-	//ATUALIZAÇÃO COMPLETA
+	//ATUALIZAÇÃO COMPLETA. MENTIRA, PORQUE NÃO FAZ A VERIFICAÇÃO SE REALMENTE TODOS OS DADOS SÃO DIFERENTES
 	public Funcionario atualizacao(Long id, Funcionario funcionarioAtualizado) {
 		Funcionario funcionario = repositorio.findByIdObrigatorio(id);
 		
@@ -76,27 +78,61 @@ public class FuncionarioService {
 	
 	
 	//ATUALIZAÇÃO PARCIAL
-	public Funcionario atualizacaoParcial(Long id, Funcionario funcionarioAtualizado) {
+	public Funcionario atualizacaoParcial(Long id, FuncionarioUpdateDto funcionarioAtualizado) {
 	    Funcionario funcionarioExiste = repositorio.findByIdObrigatorio(id); 
 
 	    boolean houveAlteracao = false;
 
-	    if (funcionarioAtualizado.getNome() != null && 
-	        !funcionarioAtualizado.getNome().equals(funcionarioExiste.getNome())) {
+	    if (funcionarioAtualizado.getNome() != null && !funcionarioAtualizado.getNome().equals(funcionarioExiste.getNome())) {
 	        funcionarioExiste.setNome(funcionarioAtualizado.getNome());
 	        houveAlteracao = true;
 	    }
-
-	    if (funcionarioAtualizado.getEndereco() != null && 
-	        !funcionarioAtualizado.getEndereco().equals(funcionarioExiste.getEndereco())) {
-	        funcionarioExiste.setEndereco(funcionarioAtualizado.getEndereco());
-	        houveAlteracao = true;
+	    
+	    EnderecoUpdateDto enderecoDto = funcionarioAtualizado.getEndereco();
+		    if (enderecoDto != null) {
+			        EnderecoUpdateDto enderecoUpdate = funcionarioAtualizado.getEndereco();
+			        
+			        if (enderecoUpdate == null) {
+			            funcionarioAtualizado.setEndereco(enderecoUpdate);
+			        }
+		
+			        //RUA
+			        if (enderecoUpdate.getRua() != null && !enderecoUpdate.getRua().equals(funcionarioExiste.getEndereco().getRua())) {
+			            funcionarioExiste.getEndereco().setRua(enderecoUpdate.getRua());
+			            houveAlteracao = true;
+			        }
+		
+			       //BAIRRO
+			        if (enderecoUpdate.getBairro() != null && !enderecoUpdate.getBairro().equals(funcionarioExiste.getEndereco().getBairro())) {
+			        	funcionarioExiste.getEndereco().setBairro(enderecoUpdate.getBairro());
+			            
+			            houveAlteracao = true;
+			        }
+			        
+			       //CIDADE
+			        if (enderecoUpdate.getCidade() != null && !enderecoUpdate.getCidade().equals(funcionarioExiste.getEndereco().getCidade())) {
+			        	funcionarioExiste.getEndereco().setCidade(enderecoUpdate.getCidade());
+			            houveAlteracao = true;
+			        }
+			        
+			       //NUMERO
+			        if (enderecoUpdate.getNumero() != null && !enderecoUpdate.getNumero().equals(funcionarioExiste.getEndereco().getNumero())) {
+			        	funcionarioExiste.getEndereco().setNumero(enderecoUpdate.getNumero());
+			            houveAlteracao = true;
+			        }
+			        
+			       //CEP
+			        if (enderecoUpdate.getCep() != null && !enderecoUpdate.getCep().equals(funcionarioExiste.getEndereco().getCep())) {
+			        	funcionarioExiste.getEndereco().setCep(enderecoUpdate.getCep());
+			            houveAlteracao = true;
+			        }
+	
+		    if (!houveAlteracao) {
+		        throw new BusinessException("Nenhuma modificação foi realizada.");
+		    }
 	    }
-
-	    if (!houveAlteracao) {
-	        throw new BusinessException("Nenhuma modificação foi realizada.");
-	    }
-
+		    
 	    return repositorio.save(funcionarioExiste);
 	}
+	
 }
